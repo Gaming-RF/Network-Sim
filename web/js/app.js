@@ -40,7 +40,7 @@ class NetSimApp {
         // Try connecting to WebSocket
         try {
             const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-                this.ws = new window.SimWebSocket(`${protocol}//${window.location.host}/ws`);
+                this.ws = new window.SimWebSocket(protocol + '//' + window.location.host + '/ws');
             this.ws.onEvent('topology_snapshot', (payload) => {
                 this.topologyRenderer.loadTopology(payload);
                 this.panelManager.setSimulationState('stopped');
