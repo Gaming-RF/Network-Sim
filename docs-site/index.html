@@ -1,0 +1,1812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NetSim — Network Simulator Documentation</title>
+  <meta name="description" content="Comprehensive documentation for NetSim, a modular real-time network simulator with Python asyncio, WebSocket telemetry, and interactive topology visualization.">
+  <meta name="keywords" content="network simulator, python, asyncio, websocket, topology visualization, routing, arp, icmp, documentation">
+  <meta name="author" content="NetSim Team">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="NetSim — Network Simulator Documentation">
+  <meta property="og:description" content="A modular, extensible, real-time network simulator built with Python and asyncio.">
+  <meta property="og:type" content="website">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Prism.js for syntax highlighting -->
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+  <!-- Our styles -->
+  <link rel="stylesheet" href="css/docs.css">
+
+  <!-- Favicon (inline SVG) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌐</text></svg>">
+</head>
+<body>
+
+  <!-- ═══ HEADER ═══════════════════════════════════════════════ -->
+  <header class="site-header">
+    <div class="header-brand">
+      <button class="hamburger" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="header-logo">NS</div>
+      <span class="header-title">NetSim</span>
+      <span class="header-version">v1.0.0</span>
+    </div>
+    <div class="header-links">
+      <a href="#" onclick="event.preventDefault(); window.openSearch();">🔍 Search <kbd style="font-size:0.7em;opacity:0.5;margin-left:4px">Ctrl+K</kbd></a>
+      <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </header>
+
+  <!-- ═══ SIDEBAR OVERLAY (mobile) ═════════════════════════════ -->
+  <div class="sidebar-overlay"></div>
+
+  <!-- ═══ SIDEBAR ══════════════════════════════════════════════ -->
+  <aside class="sidebar">
+    <nav>
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Getting Started</div>
+        <ul>
+          <li><a href="#overview">Overview</a></li>
+          <li><a href="#quick-start">Quick Start</a></li>
+          <li><a href="#architecture">Architecture</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Core</div>
+        <ul>
+          <li><a href="#core-models">Core Models</a></li>
+          <li class="sub"><a href="#packet-model">Packet</a></li>
+          <li class="sub"><a href="#node-types">Nodes</a></li>
+          <li class="sub"><a href="#link-model">Links</a></li>
+          <li><a href="#simulation-engine">Simulation Engine</a></li>
+          <li class="sub"><a href="#controller">Controller</a></li>
+          <li class="sub"><a href="#clock">Clock</a></li>
+          <li class="sub"><a href="#eventbus">EventBus</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Networking</div>
+        <ul>
+          <li><a href="#protocol-stack">Protocol Stack</a></li>
+          <li class="sub"><a href="#arp">ARP</a></li>
+          <li class="sub"><a href="#ip">IP</a></li>
+          <li class="sub"><a href="#icmp">ICMP</a></li>
+          <li><a href="#routing-engine">Routing Engine</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Extending</div>
+        <ul>
+          <li><a href="#plugin-system">Plugin System</a></li>
+          <li><a href="#scenario-format">Scenario Format</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">API &amp; Frontend</div>
+        <ul>
+          <li><a href="#websocket-api">WebSocket API</a></li>
+          <li class="sub"><a href="#ws-events">Events</a></li>
+          <li class="sub"><a href="#ws-commands">Commands</a></li>
+          <li><a href="#web-frontend">Web Frontend</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Operations</div>
+        <ul>
+          <li><a href="#cli-reference">CLI Reference</a></li>
+          <li><a href="#deployment">Deployment</a></li>
+          <li><a href="#limitations">Limitations</a></li>
+          <li><a href="#roadmap">Roadmap</a></li>
+        </ul>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- ═══ MAIN CONTENT ═════════════════════════════════════════ -->
+  <main class="main-wrapper">
+
+    <!-- ── Hero ──────────────────────────────────────────────── -->
+    <div class="hero" id="top">
+      <h1 class="hero-title">NetSim Documentation</h1>
+      <p class="hero-subtitle">
+        A modular, extensible, real-time network simulator built with Python&nbsp;3 and asyncio.
+        Visualize packet-level behavior with an interactive web dashboard.
+      </p>
+      <div class="hero-buttons">
+        <a href="#quick-start" class="btn btn-primary">🚀 Quick Start</a>
+        <a href="#websocket-api" class="btn btn-secondary">📡 API Reference</a>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>Event-Driven Engine</h3>
+          <p>Tick-based simulation with asyncio and a pub/sub EventBus for loose coupling.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🌐</div>
+          <h3>Protocol Stack</h3>
+          <p>ARP resolution, IP forwarding, and ICMP echo/reply with full packet lifecycle.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🗺️</div>
+          <h3>Static Routing</h3>
+          <p>Longest-prefix match forwarding with configurable static routes and metrics.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>Live Dashboard</h3>
+          <p>Interactive topology via vis-network with real-time telemetry over WebSocket.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔌</div>
+          <h3>Plugin System</h3>
+          <p>Extend behavior with custom Python plugins — observe events, inject packets, collect metrics.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📁</div>
+          <h3>Scenario Files</h3>
+          <p>Define topologies and actions in JSON or YAML. Two included examples to get started.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ══════════════════════════════════════════════════════
+           OVERVIEW
+           ══════════════════════════════════════════════════════ -->
+      <section class="section" id="overview">
+        <h2>Project Overview</h2>
+
+        <p><strong>NetSim</strong> is a modular, extensible, real-time network simulator built with Python 3.x and asyncio. It provides an event-driven simulation engine for modeling packet-level behavior across hosts, routers, and switches — complete with ARP resolution, IP forwarding, ICMP echo/reply, and static routing with longest-prefix match.</p>
+
+        <p>A built-in aiohttp WebSocket server streams real-time telemetry to a web dashboard powered by vis-network for interactive topology visualization. Scenarios are defined in JSON or YAML files, and the simulator supports a plugin system for extending functionality.</p>
+
+        <h3>Tech Stack</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>Layer</th><th>Technology</th></tr></thead>
+            <tbody>
+              <tr><td>Simulation Core</td><td>Python 3.10+, asyncio</td></tr>
+              <tr><td>Data Validation</td><td>Pydantic v2</td></tr>
+              <tr><td>WebSocket Server</td><td>aiohttp ≥ 3.9</td></tr>
+              <tr><td>Config Parsing</td><td>PyYAML ≥ 6.0</td></tr>
+              <tr><td>Web Frontend</td><td>Vanilla JS, vis-network, Chart.js</td></tr>
+              <tr><td>Deployment</td><td>Cloudflare Pages (web), systemd (sim)</td></tr>
+              <tr><td>Testing</td><td>pytest, pytest-asyncio</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Architecture Diagram</h3>
+        <div class="mermaid-wrapper">
+          <div class="mermaid">
+graph TB
+    subgraph "Python Simulator"
+        SC["Scenario Loader"] --> EN["Engine / Controller"]
+        EN --> CLK["Tick Clock"]
+        EN --> EB["EventBus"]
+        subgraph "Core Models"
+            PKT["Packet"]
+            HOST["Host Node"]
+            RTR["Router Node"]
+            SW["Switch Node"]
+            LNK["Link"]
+        end
+        subgraph "Protocol Stack"
+            ARP["ARP"]
+            IP["IP Layer"]
+            ICMP["ICMP"]
+        end
+        subgraph "Routing"
+            FWD["Forwarding Table"]
+            LPM["Longest Prefix Match"]
+        end
+        PLG["Plugin Manager"] -->|"on_tick, on_packet"| EN
+        EN --> WS["WebSocket Server"]
+    end
+    subgraph "Web Frontend"
+        DASH["Dashboard UI"]
+        TOPO["Topology View"]
+        STATS["Stats Panel"]
+        LOG["Event Log"]
+    end
+    WS <-->|"ws://localhost:8765/ws"| DASH
+    DASH --> TOPO
+    DASH --> STATS
+    DASH --> LOG
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════
+           QUICK START
+           ══════════════════════════════════════════════════════ -->
+      <section class="section" id="quick-start">
+        <h2>Quick Start</h2>
+
+        <h3>Prerequisites</h3>
+        <ul>
+          <li>Python 3.10 or higher</li>
+          <li>pip (Python package manager)</li>
+          <li>A modern web browser (Chrome, Firefox, Edge)</li>
+        </ul>
+
+        <h3>Installation &amp; First Run</h3>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-lang">bash</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code class="language-bash"># 1. Clone or download the project
+git clone &lt;repository-url&gt;
+cd "Network sim"
+
+# 2. Install Python dependencies
+pip install -r requirements.txt
+
+# 3. Run the simulator with a scenario
+python -m simulator --scenario simulator/scenarios/simple_lan.json
+
+# 4. Open the dashboard in your browser
+#    Navigate to: http://localhost:8765
+
+# 5. Or open the web frontend directly (demo/offline mode)
+#    Open web/index.html in your browser</code></pre>
+        </div>
+
+        <h3>Verify Installation</h3>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-lang">bash</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code class="language-bash"># Check Python version
+python --version  # Should be 3.10+
+
+# Check dependencies
+pip list | grep -E "aiohttp|pyyaml|pydantic"
+
+# Run tests (optional)
+pytest -v</code></pre>
+        </div>
+
+        <div class="callout callout-tip">
+          <span class="callout-icon">💡</span>
+          <div class="callout-content">
+            <strong>Tip</strong>
+            <p>For best performance, install <code>uvloop</code>: <code>pip install uvloop</code>. The simulator will automatically use it when available.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════
+           ARCHITECTURE
+           ══════════════════════════════════════════════════════ -->
+      <section class="section" id="architecture">
+        <h2>Architecture</h2>
+
+        <p>NetSim follows a layered architecture where each module has a single responsibility:</p>
+
+        <h3>Directory Structure</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-lang">text</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code>Network sim/
+├── simulator/
+│   ├── __init__.py
+│   ├── __main__.py            # Entry point, CLI parsing
+│   ├── core/
+│   │   ├── packet.py          # Packet data model
+│   │   ├── node.py            # Node base + Host, Router, Switch
+│   │   ├── link.py            # Link model (bandwidth, latency, loss)
+│   │   └── interface.py       # Network interface model
+│   ├── engine/
+│   │   ├── controller.py      # Main simulation controller
+│   │   ├── clock.py           # Tick-based simulation clock
+│   │   └── eventbus.py        # Pub/sub event distribution
+│   ├── protocols/
+│   │   ├── arp.py             # ARP request/reply resolution
+│   │   ├── ip.py              # IP layer forwarding logic
+│   │   └── icmp.py            # ICMP echo request/reply
+│   ├── routing/
+│   │   ├── table.py           # Forwarding table data structure
+│   │   └── engine.py          # Longest-prefix match lookup
+│   ├── plugins/
+│   │   ├── manager.py         # Plugin loader / lifecycle
+│   │   ├── base.py            # SimPlugin base class
+│   │   └── custom/            # User-created plugins go here
+│   ├── server/
+│   │   └── websocket.py       # aiohttp WebSocket server
+│   └── scenarios/
+│       ├── simple_lan.json    # 3 hosts + 1 switch
+│       └── multi_router.json  # 2 subnets + 2 routers
+├── web/                        # Dashboard frontend
+├── docs-site/                  # This documentation site
+├── requirements.txt
+├── pyproject.toml
+├── README.md
+└── handoff.md                  # Full handoff document</code></pre>
+        </div>
+
+        <h3>Data Flow</h3>
+        <ol>
+          <li><strong>Scenario Loading</strong> — The scenario loader parses a JSON/YAML file and instantiates Node, Link, and Interface objects.</li>
+          <li><strong>Simulation Loop</strong> — The Controller advances the Clock each tick. On every tick, the EventBus dispatches events to all subscribers.</li>
+          <li><strong>Protocol Processing</strong> — When a node needs to send a packet, the IP layer determines the route, ARP resolves the MAC address, and the packet traverses the link with configured latency/loss.</li>
+          <li><strong>Plugin Hooks</strong> — Plugins receive <code>on_tick</code> and <code>on_packet</code> callbacks for custom logic.</li>
+          <li><strong>Telemetry Streaming</strong> — Every simulation event is pushed via WebSocket to connected dashboard clients.</li>
+          <li><strong>Frontend Rendering</strong> — The dashboard updates the topology graph, statistics charts, and event log in real time.</li>
+        </ol>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════
+           CORE MODELS
+           ══════════════════════════════════════════════════════ -->
+      <section class="section" id="core-models">
+        <h2>Core Models</h2>
+
+        <p>The core module defines the fundamental data structures used throughout the simulator.</p>
+
+        <!-- Packet -->
+        <div id="packet-model">
+          <h3>Packet</h3>
+          <p>The <code>Packet</code> model represents a network frame/packet traversing the simulated network.</p>
+
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="copy-btn">Copy</button>
+            </div>
+            <pre><code class="language-python">from pydantic import BaseModel
+from typing import Optional
+from enum import Enum
+
+class PacketType(str, Enum):
+    ARP_REQUEST  = "arp_request"
+    ARP_REPLY    = "arp_reply"
+    ICMP_ECHO    = "icmp_echo"
+    ICMP_REPLY   = "icmp_reply"
+    IP           = "ip"
+
+class Packet(BaseModel):
+    id: str                          # Unique packet identifier
+    type: PacketType                 # Packet type enum
+    src_mac: str                     # Source MAC address
+    dst_mac: str                     # Destination MAC address
+    src_ip: Optional[str] = None     # Source IP address
+    dst_ip: Optional[str] = None     # Destination IP address
+    ttl: int = 64                    # Time to live
+    payload: dict = {}               # Arbitrary payload data
+    size: int = 64                   # Packet size in bytes
+    created_at: int = 0              # Tick when packet was created</code></pre>
+          </div>
+
+          <h4>Packet Fields</h4>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td>id</td><td>str</td><td>UUID-style unique identifier</td></tr>
+                <tr><td>type</td><td>PacketType</td><td>Protocol type (ARP, ICMP, IP)</td></tr>
+                <tr><td>src_mac</td><td>str</td><td>Source MAC in <code>aa:bb:cc:dd:ee:ff</code> format</td></tr>
+                <tr><td>dst_mac</td><td>str</td><td>Destination MAC (<code>ff:ff:ff:ff:ff:ff</code> for broadcast)</td></tr>
+                <tr><td>src_ip</td><td>str?</td><td>Source IPv4 address (dotted-quad)</td></tr>
+                <tr><td>dst_ip</td><td>str?</td><td>Destination IPv4 address</td></tr>
+                <tr><td>ttl</td><td>int</td><td>Decremented on each router hop (default: 64)</td></tr>
+                <tr><td>payload</td><td>dict</td><td>Protocol-specific data</td></tr>
+                <tr><td>size</td><td>int</td><td>Simulated packet size in bytes</td></tr>
+                <tr><td>created_at</td><td>int</td><td>Simulation tick at creation time</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Node Types -->
+        <div id="node-types">
+          <h3>Node Types</h3>
+          <p>All nodes inherit from a <code>Node</code> base class:</p>
+
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="copy-btn">Copy</button>
+            </div>
+            <pre><code class="language-python">class Node(BaseModel):
+    id: str                          # Unique node identifier
+    type: str                        # "host", "router", or "switch"
+    interfaces: list[Interface]      # Network interfaces
+
+class Host(Node):
+    type: str = "host"
+    gateway: Optional[str] = None    # Default gateway IP
+
+class Router(Node):
+    type: str = "router"
+    routes: list[Route] = []         # Static routing table
+
+class Switch(Node):
+    type: str = "switch"
+    mac_table: dict[str, str] = {}   # Learned MAC → port mapping</code></pre>
+          </div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Type</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td>Host</td><td>End-user device. Sends/receives packets. Has a default gateway.</td></tr>
+                <tr><td>Router</td><td>Forwards packets between subnets. Has a static routing table.</td></tr>
+                <tr><td>Switch</td><td>Layer-2 device. Forwards frames based on learned MAC address table.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Interface & Link -->
+        <div id="link-model">
+          <h3>Interface</h3>
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="copy-btn">Copy</button>
+            </div>
+            <pre><code class="language-python">class Interface(BaseModel):
+    name: str                        # Interface name (e.g., "eth0")
+    mac: str                         # MAC address
+    ip: Optional[str] = None         # IP address (None for switch ports)
+    mask: Optional[str] = None       # Subnet mask (dotted-quad)</code></pre>
+          </div>
+
+          <h3>Link</h3>
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="copy-btn">Copy</button>
+            </div>
+            <pre><code class="language-python">class Link(BaseModel):
+    id: str                          # Link identifier
+    endpoints: tuple[str, str]       # "node_id.interface" pair
+    bandwidth: int = 1_000_000_000   # Bandwidth in bits/sec (default 1 Gbps)
+    latency: int = 1                 # Latency in simulation ticks
+    loss_rate: float = 0.0           # Packet loss probability (0.0–1.0)</code></pre>
+          </div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td>bandwidth</td><td>int</td><td>1 Gbps</td><td>Link capacity in bits per second</td></tr>
+                <tr><td>latency</td><td>int</td><td>1</td><td>Propagation delay in ticks</td></tr>
+                <tr><td>loss_rate</td><td>float</td><td>0.0</td><td>Random drop probability (0.0–1.0)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════
+           SIMULATION ENGINE
+           ══════════════════════════════════════════════════════ -->
+      <section class="section" id="simulation-engine">
+        <h2>Simulation Engine</h2>
+
+        <div id="controller">
+          <h3>Controller</h3>
+          <p>The <code>Controller</code> is the central orchestrator. It manages the simulation lifecycle:</p>
+
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="copy-btn">Copy</button>
+            </div>
+            <pre><code class="language-python">class Controller:
+    async def load_scenario(self, path: str) -> None:
+        """Parse scenario file and build topology."""
+
+    async def start(self) -> None:
+        """Begin the simulation loop."""
+
+    async def stop(self) -> None:
+        """Pause the simulation."""
+
+    async def step(self) -> None:
+        """Advance exactly one tick."""
+
+    async def reset(self) -> None:
+        """Reset simulation to initial state."""
+
+    async def tick(self) -> None:
+        """Process one simulation tick:
+        1. Advance clock
+        2. Process queued packets on all links
+        3. Run protocol handlers
+        4. Notify plugins
+        5. Emit telemetry events
+        """</code></pre>
+          </div>
+        </div>
+
+        <div id="clock">
+          <h3>Clock</h3>
+          <p>The simulation uses a discrete tick-based clock:</p>
+
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="copy-btn">Copy</button>
+            </div>
+            <pre><code class="language-python">class Clock:
+    tick: int = 0                    # Current tick count
+    tick_rate: float = 0.1           # Seconds per tick (real-time delay)
+    running: bool = False            # Is simulation running?
+
+    def advance(self) -> int:
+        """Increment tick and return new value."""
+        self.tick += 1
+        return self.tick</code></pre>
+          </div>
+
+          <ul>
+            <li><strong>tick_rate</strong> — Controls real-time speed. <code>0.1</code> = 10 ticks/second.</li>
+            <li>The clock can be paused, resumed, or single-stepped.</li>
+          </ul>
+        </div>
+
+        <div id="eventbus">
+          <h3>EventBus</h3>
+          <p>The <code>EventBus</code> implements a publish/subscribe pattern for loose coupling:</p>
+
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="copy-btn">Copy</button>
+            </div>
+            <pre><code class="language-python">class EventBus:
+    def subscribe(self, event_type: str, callback: Callable) -> None:
+        """Register a callback for an event type."""
+
+    def emit(self, event_type: str, data: dict) -> None:
+        """Broadcast event to all subscribers."""
+
+    def clear(self) -> None:
+        """Remove all subscriptions."""</code></pre>
+          </div>
+
+          <h4>Built-in Event Types</h4>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Event</th><th>Emitted When</th></tr></thead>
+              <tbody>
+                <tr><td>packet_sent</td><td>A node transmits a packet onto a link</td></tr>
+                <tr><td>packet_received</td><td>A node receives a packet from a link</td></tr>
+                <tr><td>packet_dropped</td><td>A packet is dropped (TTL, loss, no route)</td></tr>
+                <tr><td>packet_forwarded</td><td>A router forwards a packet</td></tr>
+                <tr><td>arp_request</td><td>An ARP broadcast is sent</td></tr>
+                <tr><td>arp_reply</td><td>An ARP reply is returned</td></tr>
+                <tr><td>icmp_echo</td><td>An ICMP echo request is sent</td></tr>
+                <tr><td>icmp_reply</td><td>An ICMP echo reply is returned</td></tr>
+                <tr><td>simulation_tick</td><td>A new tick has been processed</td></tr>
+                <tr><td>stats_update</td><td>Aggregate statistics are recalculated</td></tr>
+                <tr><td>node_state_change</td><td>A node's state changes (up/down)</td></tr>
+                <tr><td>topology_snapshot</td><td>Full topology state is sent (on connect)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════
+           PROTOCOL STACK
+           ══════════════════════════════════════════════════════ -->
+      <section class="section" id="protocol-stack">
+        <h2>Protocol Stack</h2>
+
+        <div id="arp">
+          <h3>ARP (Address Resolution Protocol)</h3>
+          <p>ARP resolves IP addresses to MAC addresses within a subnet.</p>
+
+          <h4>Behavior</h4>
+          <ol>
+            <li>When a node needs to send to an IP on the same subnet but doesn't have the MAC, it broadcasts an <code>ARP_REQUEST</code> (<code>dst_mac: ff:ff:ff:ff:ff:ff</code>).</li>
+            <li>All nodes on the link segment receive the broadcast.</li>
+            <li>The target node replies with an <code>ARP_REPLY</code> containing its MAC.</li>
+            <li>The sender caches the mapping in its ARP table.</li>
+            <li>ARP entries expire after a configurable timeout (default: 300 ticks).</li>
+          </ol>
+
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="copy-btn">Copy</button>
+            </div>
+            <pre><code class="language-python">class ArpTable:
+    entries: dict[str, ArpEntry]     # IP → (MAC, expiry_tick)
+
+    def lookup(self, ip: str) -> Optional[str]:
+        """Return MAC for IP, or None if not cached."""
+
+    def update(self, ip: str, mac: str, ttl: int = 300) -> None:
+        """Add or refresh an ARP entry."""</code></pre>
+          </div>
+        </div>
+
+        <div id="ip">
+          <h3>IP (Internet Protocol)</h3>
+          <p>The IP layer handles addressing and forwarding decisions:</p>
+
+          <ol>
+            <li><strong>Same subnet</strong> — If <code>dst_ip</code> is on the same subnet as the sending interface, resolve via ARP and send directly.</li>
+            <li><strong>Different subnet</strong> — Forward to the default gateway (hosts) or consult the routing table (routers).</li>
+            <li><strong>TTL check</strong> — Decrement TTL on each hop. Drop packet if TTL reaches 0.</li>
+            <li><strong>No route</strong> — If no matching route is found, drop the packet and emit <code>packet_dropped</code>.</li>
+          </ol>
+        </div>
+
+        <div id="icmp">
+          <h3>ICMP (Internet Control Message Protocol)</h3>
+          <p>ICMP provides diagnostic functionality (ping):</p>
+
+          <ul>
+            <li><strong>Echo Request</strong> — Generated by the <code>ping</code> action. Sends an <code>ICMP_ECHO</code> packet to the target IP.</li>
+            <li><strong>Echo Reply</strong> — When a node receives an <code>ICMP_ECHO</code> addressed to itself, it responds with an <code>ICMP_REPLY</code>.</li>
+            <li><strong>TTL Exceeded</strong> — When a router drops a packet due to TTL=0, it sends a TTL exceeded message back to the source.</li>
+          </ul>
+
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">python</span>
+              <button class="copy-btn">Copy</button>
+            </div>
+            <pre><code class="language-python"># Ping action generates these packets
+echo_request = Packet(
+    type=PacketType.ICMP_ECHO,
+    src_ip="192.168.1.10",
+    dst_ip="192.168.1.20",
+    payload={"seq": 1, "timestamp": current_tick}
+)</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════
+           ROUTING ENGINE
+           ══════════════════════════════════════════════════════ -->
+      <section class="section" id="routing-engine">
+        <h2>Routing Engine</h2>
+
+        <h3>Static Routing</h3>
+        <p>Routers use static routes defined in the scenario file. Each route specifies:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-lang">python</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code class="language-python">class Route(BaseModel):
+    network: str          # CIDR notation, e.g., "10.0.2.0/24"
+    next_hop: str         # Next-hop IP address
+    interface: str        # Outgoing interface name
+    metric: int = 0       # Route preference (lower = preferred)</code></pre>
+        </div>
+
+        <h3>Longest Prefix Match (LPM)</h3>
+        <p>When forwarding a packet, the router consults its routing table:</p>
+
+        <ol>
+          <li>Convert <code>dst_ip</code> to binary</li>
+          <li>Compare against all route network prefixes</li>
+          <li>Select the route with the longest matching prefix</li>
+          <li>If multiple routes have the same prefix length, prefer the lowest metric</li>
+          <li>If no route matches, drop the packet</li>
+        </ol>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-lang">python</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code class="language-python">class RoutingEngine:
+    def lookup(self, dst_ip: str, routes: list[Route]) -> Optional[Route]:
+        """Find the best matching route via longest-prefix match."""
+        best = None
+        best_prefix_len = -1
+
+        for route in routes:
+            network, prefix_len = parse_cidr(route.network)
+            if matches(dst_ip, network, prefix_len):
+                if prefix_len > best_prefix_len:
+                    best = route
+                    best_prefix_len = prefix_len
+                elif prefix_len == best_prefix_len:
+                    if route.metric < best.metric:
+                        best = route
+        return best</code></pre>
+        </div>
+
+        <h3>Forwarding Table (Hosts)</h3>
+        <p>Hosts have a simpler forwarding decision:</p>
+        <ul>
+          <li>If <code>dst_ip</code> is on the <strong>same subnet</strong> → send directly (ARP resolve)</li>
+          <li>Otherwise → forward to the <strong>default gateway</strong></li>
+        </ul>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════
+           PLUGIN SYSTEM
+           ══════════════════════════════════════════════════════ -->
+      <section class="section" id="plugin-system">
+        <h2>Plugin System</h2>
+
+        <p>NetSim supports a plugin system for extending simulator behavior without modifying core code. Plugins can observe events, inject packets, modify behavior, and collect metrics.</p>
+
+        <h3>Creating a Plugin</h3>
+        <ol>
+          <li>Create a new <code>.py</code> file in <code>simulator/plugins/custom/</code></li>
+          <li>Subclass <code>SimPlugin</code></li>
+          <li>Implement lifecycle hooks</li>
+        </ol>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-lang">python</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code class="language-python"># simulator/plugins/custom/traffic_monitor.py
+
+from simulator.plugins.base import SimPlugin
+
+class TrafficMonitorPlugin(SimPlugin):
+    """Counts packets per node and logs throughput statistics."""
+
+    name = "traffic_monitor"
+    version = "1.0.0"
+
+    def __init__(self):
+        self.packet_counts: dict[str, int] = {}
+        self.byte_counts: dict[str, int] = {}
+
+    async def on_load(self, context):
+        """Called when the plugin is loaded.
+
+        Args:
+            context: Provides access to the simulation controller,
+                     event bus, and topology.
+        """
+        self.logger = context.get_logger(self.name)
+        self.logger.info(f"{self.name} v{self.version} loaded")
+
+    async def on_tick(self, tick: int, context):
+        """Called on every simulation tick.
+
+        Args:
+            tick: Current simulation tick number.
+            context: Simulation context with access to all nodes/links.
+        """
+        if tick % 100 == 0:  # Log every 100 ticks
+            self.logger.info(f"Tick {tick}: {self.packet_counts}")
+
+    async def on_packet(self, event: str, packet, node, context):
+        """Called when a packet event occurs.
+
+        Args:
+            event: Event type (packet_sent, packet_received, etc.)
+            packet: The Packet object.
+            node: The Node involved.
+            context: Simulation context.
+        """
+        node_id = node.id
+        self.packet_counts[node_id] = self.packet_counts.get(node_id, 0) + 1
+        self.byte_counts[node_id] = self.byte_counts.get(node_id, 0) + packet.size
+
+    async def on_unload(self):
+        """Called when the plugin is unloaded or simulation resets."""
+        self.logger.info(f"Final counts: {self.packet_counts}")</code></pre>
+        </div>
+
+        <h3>Plugin Lifecycle</h3>
+
+        <div class="mermaid-wrapper">
+          <div class="mermaid">
+graph LR
+    A["Discovery"] --> B["Load"]
+    B --> C["on_load"]
+    C --> D["Running"]
+    D --> E["on_tick / on_packet"]
+    E --> D
+    D --> F["on_unload"]
+    F --> G["Removed"]
+          </div>
+        </div>
+
+        <ol>
+          <li><strong>Discovery</strong> — The PluginManager scans <code>simulator/plugins/custom/</code> for <code>.py</code> files</li>
+          <li><strong>Load</strong> — Classes subclassing <code>SimPlugin</code> are instantiated</li>
+          <li><strong>on_load</strong> — Plugin receives the simulation context</li>
+          <li><strong>Running</strong> — Plugin receives <code>on_tick</code> and <code>on_packet</code> callbacks</li>
+          <li><strong>on_unload</strong> — Plugin cleans up when simulation resets or shuts down</li>
+        </ol>
+
+        <h3>Plugin Base Class</h3>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-lang">python</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code class="language-python">class SimPlugin:
+    name: str = "unnamed_plugin"
+    version: str = "0.0.0"
+
+    async def on_load(self, context) -> None: ...
+    async def on_tick(self, tick: int, context) -> None: ...
+    async def on_packet(self, event: str, packet, node, context) -> None: ...
+    async def on_unload(self) -> None: ...</code></pre>
+        </div>
+
+        <h3>Plugin Ideas</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>Plugin</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>Traffic Monitor</td><td>Count packets/bytes per node</td></tr>
+              <tr><td>Fault Injector</td><td>Randomly drop links or increase latency</td></tr>
+              <tr><td>Packet Logger</td><td>Write all packet events to a file</td></tr>
+              <tr><td>Bandwidth Limiter</td><td>Enforce bandwidth caps on links</td></tr>
+              <tr><td>Topology Mutator</td><td>Add/remove nodes during simulation</td></tr>
+              <tr><td>Latency Analyzer</td><td>Track round-trip times for ping actions</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════
+           SCENARIO FORMAT
+           ══════════════════════════════════════════════════════ -->
+      <section class="section" id="scenario-format">
+        <h2>Scenario File Format</h2>
+
+        <p>Scenarios define the network topology and simulation behavior. They can be written in <strong>JSON</strong> or <strong>YAML</strong> format.</p>
+
+        <h3>Full JSON Specification</h3>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-lang">json</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code class="language-json">{
+  "name": "Scenario Name",
+  "description": "Human-readable description",
+  "tick_rate": 0.1,
+
+  "nodes": [
+    {
+      "id": "unique-node-id",
+      "type": "host",
+      "interfaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.10",
+          "mask": "255.255.255.0",
+          "mac": "aa:bb:cc:00:00:01"
+        }
+      ],
+      "gateway": "192.168.1.1"
+    },
+    {
+      "id": "router-1",
+      "type": "router",
+      "interfaces": [
+        {"name": "eth0", "ip": "192.168.1.1", "mask": "255.255.255.0", "mac": "cc:00:00:01:00:01"},
+        {"name": "eth1", "ip": "10.0.0.1", "mask": "255.255.255.0", "mac": "cc:00:00:01:00:02"}
+      ],
+      "routes": [
+        {"network": "10.0.2.0/24", "next_hop": "10.0.0.2", "interface": "eth1", "metric": 1}
+      ]
+    },
+    {
+      "id": "switch-1",
+      "type": "switch",
+      "interfaces": [
+        {"name": "port0", "mac": "ff:00:00:01:00:01"},
+        {"name": "port1", "mac": "ff:00:00:01:00:02"}
+      ]
+    }
+  ],
+
+  "links": [
+    {
+      "id": "link-1",
+      "endpoints": ["host-a.eth0", "switch-1.port0"],
+      "bandwidth": 1000000000,
+      "latency": 1,
+      "loss_rate": 0.0
+    }
+  ],
+
+  "actions": [
+    {
+      "type": "ping",
+      "from": "host-a",
+      "to": "192.168.1.20",
+      "count": 4,
+      "delay": 2
+    }
+  ]
+}</code></pre>
+        </div>
+
+        <h3>Field Reference</h3>
+
+        <h4>Top-Level Fields</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>name</td><td>string</td><td>Yes</td><td>Scenario display name</td></tr>
+              <tr><td>description</td><td>string</td><td>No</td><td>Human-readable description</td></tr>
+              <tr><td>tick_rate</td><td>float</td><td>No</td><td>Seconds between ticks (default: 0.1)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Node Fields</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>id</td><td>string</td><td>Yes</td><td>Unique identifier</td></tr>
+              <tr><td>type</td><td>string</td><td>Yes</td><td><code>"host"</code>, <code>"router"</code>, or <code>"switch"</code></td></tr>
+              <tr><td>interfaces</td><td>array</td><td>Yes</td><td>List of network interfaces</td></tr>
+              <tr><td>gateway</td><td>string</td><td>Host only</td><td>Default gateway IP</td></tr>
+              <tr><td>routes</td><td>array</td><td>Router only</td><td>Static routing entries</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Interface Fields</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>name</td><td>string</td><td>Yes</td><td>Interface name (e.g., <code>eth0</code>, <code>port0</code>)</td></tr>
+              <tr><td>mac</td><td>string</td><td>Yes</td><td>MAC address in <code>aa:bb:cc:dd:ee:ff</code> format</td></tr>
+              <tr><td>ip</td><td>string</td><td>No*</td><td>IPv4 address (*required for hosts/routers)</td></tr>
+              <tr><td>mask</td><td>string</td><td>No*</td><td>Subnet mask (*required when <code>ip</code> is set)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Link Fields</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>id</td><td>string</td><td>Yes</td><td>Link identifier</td></tr>
+              <tr><td>endpoints</td><td>array</td><td>Yes</td><td>Exactly 2 strings: <code>"node_id.interface_name"</code></td></tr>
+              <tr><td>bandwidth</td><td>int</td><td>No</td><td>Bits/sec (default: 1 Gbps)</td></tr>
+              <tr><td>latency</td><td>int</td><td>No</td><td>Propagation delay in ticks (default: 1)</td></tr>
+              <tr><td>loss_rate</td><td>float</td><td>No</td><td>Drop probability 0.0–1.0 (default: 0.0)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Action Fields</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>type</td><td>string</td><td>Yes</td><td>Action type (currently only <code>"ping"</code>)</td></tr>
+              <tr><td>from</td><td>string</td><td>Yes</td><td>Source node ID</td></tr>
+              <tr><td>to</td><td>string</td><td>Yes</td><td>Destination IP address</td></tr>
+              <tr><td>count</td><td>int</td><td>No</td><td>Number of pings (default: 4)</td></tr>
+              <tr><td>delay</td><td>int</td><td>No</td><td>Ticks before action starts (default: 0)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>YAML Equivalent</h3>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-lang">yaml</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code class="language-yaml">name: Simple LAN
+description: Three hosts connected via a switch
+tick_rate: 0.1
+
+nodes:
+  - id: host-a
+    type: host
+    interfaces:
+      - name: eth0
+        ip: 192.168.1.10
+        mask: 255.255.255.0
+        mac: "aa:bb:cc:00:00:01"
+    gateway: 192.168.1.1
+
+  - id: switch-1
+    type: switch
+    interfaces:
+      - name: port0
+        mac: "aa:bb:cc:ff:00:01"
+      - name: port1
+        mac: "aa:bb:cc:ff:00:02"
+
+links:
+  - id: link-1
+    endpoints: ["host-a.eth0", "switch-1.port0"]
+    bandwidth: 1000000000
+    latency: 1
+    loss_rate: 0.0
+
+actions:
+  - type: ping
+    from: host-a
+    to: 192.168.1.20
+    count: 4
+    delay: 2</code></pre>
+        </div>
+
+        <h3>Included Scenarios</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>Scenario</th><th>File</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>Simple LAN</td><td>simple_lan.json</td><td>3 hosts + 1 switch on a single subnet</td></tr>
+              <tr><td>Multi-Router Network</td><td>multi_router.json</td><td>2 subnets + 2 routers + 2 switches</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════
+           WEBSOCKET API
+           ══════════════════════════════════════════════════════ -->
+      <section class="section" id="websocket-api">
+        <h2>WebSocket API Reference</h2>
+
+        <p>The simulator exposes a WebSocket endpoint at <code>ws://localhost:8765/ws</code> for real-time communication with the dashboard and other clients.</p>
+
+        <h3>Connection</h3>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-lang">javascript</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code class="language-javascript">const ws = new WebSocket("ws://localhost:8765/ws");
+
+ws.onopen = () => {
+    console.log("Connected to NetSim");
+};
+
+ws.onmessage = (event) => {
+    const message = JSON.parse(event.data);
+    console.log(message.event, message.data);
+};</code></pre>
+        </div>
+
+        <h3>Message Format</h3>
+        <p><strong>Events</strong> (Server → Client):</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-lang">json</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code class="language-json">{"event": "event_name", "data": {...}, "timestamp": 1234567890.123}</code></pre>
+        </div>
+
+        <p><strong>Commands</strong> (Client → Server):</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-lang">json</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code class="language-json">{"command": "command_name", "args": {...}}</code></pre>
+        </div>
+
+        <!-- WS Events -->
+        <div id="ws-events">
+          <h3>Events Reference</h3>
+
+          <h4><code>topology_snapshot</code></h4>
+          <p>Sent immediately upon client connection. Contains the full network state.</p>
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">json</span>
+              <button class="copy-btn">Copy</button>
+            </div>
+            <pre><code class="language-json">{
+  "event": "topology_snapshot",
+  "data": {
+    "nodes": [
+      {"id": "host-a", "type": "host", "interfaces": [...], "position": {"x": 100, "y": 200}}
+    ],
+    "links": [
+      {"id": "link-1", "endpoints": ["host-a.eth0", "switch-1.port0"], "bandwidth": 1000000000, "latency": 1}
+    ],
+    "tick": 42,
+    "running": true
+  },
+  "timestamp": 1234567890.123
+}</code></pre>
+          </div>
+
+          <h4><code>packet_sent</code></h4>
+          <p>A node has placed a packet onto a link.</p>
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">json</span>
+              <button class="copy-btn">Copy</button>
+            </div>
+            <pre><code class="language-json">{
+  "event": "packet_sent",
+  "data": {
+    "packet_id": "pkt-001",
+    "type": "icmp_echo",
+    "from_node": "host-a",
+    "from_interface": "eth0",
+    "to_node": "switch-1",
+    "to_interface": "port0",
+    "link_id": "link-1",
+    "src_ip": "192.168.1.10",
+    "dst_ip": "192.168.1.20",
+    "size": 64
+  },
+  "timestamp": 1234567890.123
+}</code></pre>
+          </div>
+
+          <h4><code>packet_received</code></h4>
+          <p>A node has received a packet from a link.</p>
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">json</span>
+              <button class="copy-btn">Copy</button>
+            </div>
+            <pre><code class="language-json">{
+  "event": "packet_received",
+  "data": {
+    "packet_id": "pkt-001",
+    "type": "icmp_echo",
+    "node": "host-b",
+    "interface": "eth0",
+    "src_ip": "192.168.1.10",
+    "dst_ip": "192.168.1.20",
+    "size": 64
+  },
+  "timestamp": 1234567890.123
+}</code></pre>
+          </div>
+
+          <h4><code>packet_dropped</code></h4>
+          <p>A packet was dropped (TTL expired, no route, random loss, queue full).</p>
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">json</span>
+              <button class="copy-btn">Copy</button>
+            </div>
+            <pre><code class="language-json">{
+  "event": "packet_dropped",
+  "data": {
+    "packet_id": "pkt-002",
+    "type": "ip",
+    "node": "router-1",
+    "reason": "ttl_expired",
+    "src_ip": "10.0.1.10",
+    "dst_ip": "10.0.2.10"
+  },
+  "timestamp": 1234567890.123
+}</code></pre>
+          </div>
+
+          <div class="callout callout-note">
+            <span class="callout-icon">ℹ️</span>
+            <div class="callout-content">
+              <strong>Note</strong>
+              <p>Drop reasons include: <code>ttl_expired</code>, <code>no_route</code>, <code>link_loss</code>, <code>queue_full</code>.</p>
+            </div>
+          </div>
+
+          <h4><code>packet_forwarded</code></h4>
+          <p>A router has forwarded a packet to the next hop.</p>
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">json</span>
+              <button class="copy-btn">Copy</button>
+            </div>
+            <pre><code class="language-json">{
+  "event": "packet_forwarded",
+  "data": {
+    "packet_id": "pkt-001",
+    "node": "router-1",
+    "in_interface": "eth0",
+    "out_interface": "eth1",
+    "next_hop": "172.16.0.2",
+    "ttl": 63
+  },
+  "timestamp": 1234567890.123
+}</code></pre>
+          </div>
+
+          <h4><code>arp_request</code> / <code>arp_reply</code></h4>
+          <p>ARP broadcast sent or reply received.</p>
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">json</span>
+              <button class="copy-btn">Copy</button>
+            </div>
+            <pre><code class="language-json">// ARP Request
+{
+  "event": "arp_request",
+  "data": {
+    "node": "host-a", "interface": "eth0",
+    "target_ip": "192.168.1.20",
+    "sender_ip": "192.168.1.10", "sender_mac": "aa:bb:cc:00:00:01"
+  }
+}
+
+// ARP Reply
+{
+  "event": "arp_reply",
+  "data": {
+    "node": "host-b", "interface": "eth0",
+    "target_ip": "192.168.1.10", "target_mac": "aa:bb:cc:00:00:01",
+    "sender_ip": "192.168.1.20", "sender_mac": "aa:bb:cc:00:00:02"
+  }
+}</code></pre>
+          </div>
+
+          <h4><code>icmp_echo</code> / <code>icmp_reply</code></h4>
+          <p>ICMP echo request (ping) or reply returned.</p>
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">json</span>
+              <button class="copy-btn">Copy</button>
+            </div>
+            <pre><code class="language-json">// Echo Request
+{
+  "event": "icmp_echo",
+  "data": {
+    "packet_id": "pkt-003", "from_node": "host-a",
+    "src_ip": "192.168.1.10", "dst_ip": "192.168.1.20", "seq": 1
+  }
+}
+
+// Echo Reply
+{
+  "event": "icmp_reply",
+  "data": {
+    "packet_id": "pkt-004", "from_node": "host-b",
+    "src_ip": "192.168.1.20", "dst_ip": "192.168.1.10",
+    "seq": 1, "rtt_ticks": 4
+  }
+}</code></pre>
+          </div>
+
+          <h4><code>simulation_tick</code></h4>
+          <p>Emitted on every tick with current state.</p>
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">json</span>
+              <button class="copy-btn">Copy</button>
+            </div>
+            <pre><code class="language-json">{
+  "event": "simulation_tick",
+  "data": {"tick": 42, "running": true, "speed": 1.0},
+  "timestamp": 1234567890.123
+}</code></pre>
+          </div>
+
+          <h4><code>stats_update</code></h4>
+          <p>Aggregate statistics for the dashboard.</p>
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">json</span>
+              <button class="copy-btn">Copy</button>
+            </div>
+            <pre><code class="language-json">{
+  "event": "stats_update",
+  "data": {
+    "total_packets": 156,
+    "total_dropped": 3,
+    "total_forwarded": 89,
+    "packets_per_second": 12.4,
+    "active_nodes": 6,
+    "active_links": 7,
+    "per_node": {
+      "host-a": {"sent": 20, "received": 18, "dropped": 0},
+      "router-1": {"forwarded": 45, "dropped": 1}
+    }
+  },
+  "timestamp": 1234567890.123
+}</code></pre>
+          </div>
+
+          <h4><code>node_state_change</code></h4>
+          <p>A node has changed state (brought up or taken down).</p>
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">json</span>
+              <button class="copy-btn">Copy</button>
+            </div>
+            <pre><code class="language-json">{
+  "event": "node_state_change",
+  "data": {"node": "router-1", "state": "down", "reason": "fault_injection"},
+  "timestamp": 1234567890.123
+}</code></pre>
+          </div>
+        </div>
+
+        <!-- WS Commands -->
+        <div id="ws-commands">
+          <h3>Commands Reference</h3>
+
+          <h4><code>start</code></h4>
+          <p>Start or resume the simulation.</p>
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">json</span>
+              <button class="copy-btn">Copy</button>
+            </div>
+            <pre><code class="language-json">{"command": "start", "args": {}}</code></pre>
+          </div>
+
+          <h4><code>stop</code></h4>
+          <p>Pause the simulation.</p>
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">json</span>
+              <button class="copy-btn">Copy</button>
+            </div>
+            <pre><code class="language-json">{"command": "stop", "args": {}}</code></pre>
+          </div>
+
+          <h4><code>step</code></h4>
+          <p>Advance exactly one tick.</p>
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">json</span>
+              <button class="copy-btn">Copy</button>
+            </div>
+            <pre><code class="language-json">{"command": "step", "args": {}}</code></pre>
+          </div>
+
+          <h4><code>reset</code></h4>
+          <p>Reset simulation to initial state (tick 0, reload scenario).</p>
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">json</span>
+              <button class="copy-btn">Copy</button>
+            </div>
+            <pre><code class="language-json">{"command": "reset", "args": {}}</code></pre>
+          </div>
+
+          <h4><code>ping</code></h4>
+          <p>Initiate a ping from one node to an IP address.</p>
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">json</span>
+              <button class="copy-btn">Copy</button>
+            </div>
+            <pre><code class="language-json">{"command": "ping", "args": {"from": "host-a", "to": "192.168.1.20", "count": 4}}</code></pre>
+          </div>
+
+          <h4><code>load_scenario</code></h4>
+          <p>Load a new scenario file.</p>
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">json</span>
+              <button class="copy-btn">Copy</button>
+            </div>
+            <pre><code class="language-json">{"command": "load_scenario", "args": {"path": "simulator/scenarios/multi_router.json"}}</code></pre>
+          </div>
+
+          <h4><code>get_state</code></h4>
+          <p>Request a full <code>topology_snapshot</code> event.</p>
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">json</span>
+              <button class="copy-btn">Copy</button>
+            </div>
+            <pre><code class="language-json">{"command": "get_state", "args": {}}</code></pre>
+          </div>
+
+          <h4><code>set_speed</code></h4>
+          <p>Change simulation speed multiplier.</p>
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">json</span>
+              <button class="copy-btn">Copy</button>
+            </div>
+            <pre><code class="language-json">{"command": "set_speed", "args": {"speed": 2.0}}</code></pre>
+          </div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Speed</th><th>Effect</th></tr></thead>
+              <tbody>
+                <tr><td>0.5</td><td>Half speed (slower)</td></tr>
+                <tr><td>1.0</td><td>Normal speed (default)</td></tr>
+                <tr><td>2.0</td><td>Double speed</td></tr>
+                <tr><td>5.0</td><td>5× speed</td></tr>
+                <tr><td>10.0</td><td>10× speed (max recommended)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════
+           WEB FRONTEND
+           ══════════════════════════════════════════════════════ -->
+      <section class="section" id="web-frontend">
+        <h2>Web Frontend</h2>
+
+        <p>The web dashboard connects to the simulator via WebSocket and provides:</p>
+
+        <ul>
+          <li><strong>Topology View</strong> — Interactive network graph using vis-network</li>
+          <li><strong>Statistics Panel</strong> — Real-time charts using Chart.js</li>
+          <li><strong>Event Log</strong> — Scrolling list of simulation events</li>
+          <li><strong>Control Bar</strong> — Start, Stop, Step, Reset, and Speed controls</li>
+        </ul>
+
+        <h3>Design System</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>Property</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Background</td><td><code>#0a0e17</code> (deep navy)</td></tr>
+              <tr><td>Surface</td><td><code>#111827</code> (dark card)</td></tr>
+              <tr><td>Text Primary</td><td><code>#e0e6f0</code> (soft white)</td></tr>
+              <tr><td>Text Secondary</td><td><code>#8892a4</code> (muted gray)</td></tr>
+              <tr><td>Accent Cyan</td><td><code>#00d4ff</code></td></tr>
+              <tr><td>Accent Magenta</td><td><code>#ff006e</code></td></tr>
+              <tr><td>Accent Green</td><td><code>#00ff88</code></td></tr>
+              <tr><td>Font</td><td>Inter (Google Fonts)</td></tr>
+              <tr><td>Border Radius</td><td>12px (cards), 8px (buttons)</td></tr>
+              <tr><td>Glassmorphism</td><td><code>backdrop-filter: blur(12px)</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Frontend Modules</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>File</th><th>Purpose</th></tr></thead>
+            <tbody>
+              <tr><td>app.js</td><td>Application initialization, state manager</td></tr>
+              <tr><td>websocket.js</td><td>WebSocket connection, auto-reconnect logic</td></tr>
+              <tr><td>topology.js</td><td>vis-network graph rendering and updates</td></tr>
+              <tr><td>stats.js</td><td>Chart.js statistics panels</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Offline / Demo Mode</h3>
+        <p>When <code>web/index.html</code> is opened directly (without a running simulator), the frontend operates in demo mode with mock data to showcase the UI.</p>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════
+           CLI REFERENCE
+           ══════════════════════════════════════════════════════ -->
+      <section class="section" id="cli-reference">
+        <h2>CLI Reference</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-lang">text</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code>Usage: python -m simulator [OPTIONS]
+
+Options:
+  --scenario PATH    Path to scenario file (JSON or YAML)
+                     Default: None (starts with empty topology)
+
+  --host HOST        WebSocket server bind address
+                     Default: 0.0.0.0
+
+  --port PORT        WebSocket server port
+                     Default: 8765
+
+  --headless         Run without WebSocket server (batch mode)
+                     Useful for testing or scripted scenarios
+
+  --ticks N          Run for exactly N ticks then exit
+                     Default: unlimited (runs until stopped)
+
+  --daemon           Run as a background daemon (24/7 mode)
+                     Detaches from terminal, writes PID file
+
+  --speed FLOAT      Initial speed multiplier
+                     Default: 1.0
+
+  --log-level LEVEL  Logging level (DEBUG, INFO, WARNING, ERROR)
+                     Default: INFO</code></pre>
+        </div>
+
+        <h3>Examples</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-lang">bash</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code class="language-bash"># Basic: run with a scenario
+python -m simulator --scenario simulator/scenarios/simple_lan.json
+
+# Custom port
+python -m simulator --scenario simulator/scenarios/simple_lan.json --port 9000
+
+# Headless batch run (100 ticks, no UI)
+python -m simulator --scenario simulator/scenarios/multi_router.json \
+    --headless --ticks 100
+
+# Daemon mode (24/7 operation)
+python -m simulator --scenario simulator/scenarios/simple_lan.json --daemon
+
+# Fast simulation (5x speed)
+python -m simulator --scenario simulator/scenarios/simple_lan.json --speed 5.0
+
+# Debug logging
+python -m simulator --scenario simulator/scenarios/simple_lan.json \
+    --log-level DEBUG
+
+# Using the installed entry point
+netsim --scenario simulator/scenarios/simple_lan.json</code></pre>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════
+           DEPLOYMENT
+           ══════════════════════════════════════════════════════ -->
+      <section class="section" id="deployment">
+        <h2>Deployment Guide</h2>
+
+        <h3>Running Locally (24/7)</h3>
+
+        <h4>Using systemd (Recommended)</h4>
+        <p>Create a service file at <code>/etc/systemd/system/netsim.service</code>:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-lang">ini</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code class="language-ini">[Unit]
+Description=NetSim Network Simulator
+After=network.target
+
+[Service]
+Type=simple
+User=netsim
+Group=netsim
+WorkingDirectory=/opt/netsim
+ExecStart=/opt/netsim/venv/bin/python -m simulator \
+    --scenario simulator/scenarios/simple_lan.json \
+    --port 8765
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-lang">bash</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code class="language-bash"># Enable and start
+sudo systemctl daemon-reload
+sudo systemctl enable netsim
+sudo systemctl start netsim
+
+# Check status
+sudo systemctl status netsim
+
+# View logs
+journalctl -u netsim -f</code></pre>
+        </div>
+
+        <h4>Using nohup</h4>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-lang">bash</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code class="language-bash">nohup python -m simulator --scenario simulator/scenarios/simple_lan.json \
+    --port 8765 > netsim.log 2>&1 &
+
+# Save the PID
+echo $! > netsim.pid
+
+# Stop it later
+kill $(cat netsim.pid)</code></pre>
+        </div>
+
+        <h4>Log Rotation</h4>
+        <p>Create <code>/etc/logrotate.d/netsim</code>:</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-lang">text</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code>/opt/netsim/netsim.log {
+    daily
+    rotate 7
+    compress
+    delaycompress
+    missingok
+    notifempty
+    create 0640 netsim netsim
+    postrotate
+        systemctl restart netsim
+    endscript
+}</code></pre>
+        </div>
+
+        <h3>Cloudflare Pages (Web Frontend)</h3>
+        <p>Deploy the web dashboard to Cloudflare Pages for remote access:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-lang">bash</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code class="language-bash"># Deploy the web dashboard
+npx -y wrangler pages deploy ./web --project-name=netsim-dashboard
+
+# The dashboard will be available at:
+# https://netsim-dashboard.pages.dev</code></pre>
+        </div>
+
+        <div class="callout callout-warning">
+          <span class="callout-icon">⚠️</span>
+          <div class="callout-content">
+            <strong>Warning</strong>
+            <p>The deployed dashboard will attempt to connect to <code>ws://localhost:8765/ws</code>. For remote access, you'll need to run the simulator on a publicly accessible server and update the WebSocket URL, or use a reverse proxy / Cloudflare Tunnel for secure WSS.</p>
+          </div>
+        </div>
+
+        <h3>Cloudflare Pages (Documentation)</h3>
+        <p>Deploy this documentation site:</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-lang">bash</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code class="language-bash"># Deploy the docs site
+npx -y wrangler pages deploy ./docs-site --project-name=netsim-docs
+
+# The docs will be available at:
+# https://netsim-docs.pages.dev</code></pre>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════
+           LIMITATIONS
+           ══════════════════════════════════════════════════════ -->
+      <section class="section" id="limitations">
+        <h2>Known Limitations</h2>
+
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>Limitation</th><th>Details</th></tr></thead>
+            <tbody>
+              <tr><td>Static routing only</td><td>No dynamic routing protocols (OSPF, BGP, RIP)</td></tr>
+              <tr><td>No TCP/UDP</td><td>Transport layer is not simulated; only ICMP</td></tr>
+              <tr><td>No DHCP</td><td>IP addresses must be statically assigned in scenarios</td></tr>
+              <tr><td>Single-threaded</td><td>Uses Python asyncio (single event loop)</td></tr>
+              <tr><td>No VLANs</td><td>Switch does not support 802.1Q VLAN tagging</td></tr>
+              <tr><td>No QoS</td><td>No traffic prioritization or queuing disciplines</td></tr>
+              <tr><td>No IPv6</td><td>Only IPv4 is supported</td></tr>
+              <tr><td>No persistent state</td><td>Simulation state is lost on restart</td></tr>
+              <tr><td>WebSocket only</td><td>No REST API for external integration</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════
+           ROADMAP
+           ══════════════════════════════════════════════════════ -->
+      <section class="section" id="roadmap">
+        <h2>Roadmap</h2>
+
+        <h3>Short-term (v1.x)</h3>
+        <ul class="task-list">
+          <li>DHCP Protocol — Dynamic IP address assignment</li>
+          <li>TCP/UDP Transport Layer — Connection-oriented and datagram protocols</li>
+          <li>Packet Capture Export — Save packet traces in PCAP format</li>
+          <li>REST API — HTTP API alongside WebSocket for integration</li>
+          <li>Scenario Editor — Visual drag-and-drop topology builder in the dashboard</li>
+        </ul>
+
+        <h3>Medium-term (v2.x)</h3>
+        <ul class="task-list">
+          <li>Dynamic Routing — OSPF — Link-state routing with area support</li>
+          <li>Dynamic Routing — BGP — Border Gateway Protocol for AS peering</li>
+          <li>VLAN Support — 802.1Q tagging and trunk ports</li>
+          <li>STP — Spanning Tree Protocol for loop prevention</li>
+          <li>NAT — Network Address Translation on routers</li>
+        </ul>
+
+        <h3>Long-term (v3.x)</h3>
+        <ul class="task-list">
+          <li>Multi-user Collaboration — Multiple users controlling the same simulation</li>
+          <li>Docker Deployment — Containerized simulator with docker-compose</li>
+          <li>IPv6 Support — Dual-stack networking</li>
+          <li>QoS &amp; Traffic Shaping — Priority queues, rate limiting, DiffServ</li>
+          <li>SDN Controller Integration — OpenFlow-style programmable forwarding</li>
+          <li>AI-Powered Troubleshooting — LLM-assisted network diagnostics</li>
+        </ul>
+      </section>
+
+    </div><!-- .content -->
+
+    <!-- ═══ FOOTER ═══════════════════════════════════════════ -->
+    <footer class="site-footer">
+      <div class="footer-links">
+        <a href="#top">Back to Top</a>
+        <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+        <a href="#roadmap">Roadmap</a>
+      </div>
+      <p>NetSim v1.0.0 — MIT License — Built with Python, asyncio, and ❤️</p>
+    </footer>
+
+  </main>
+
+  <!-- ═══ BACK TO TOP ════════════════════════════════════════ -->
+  <a href="#top" class="back-to-top" aria-label="Back to top">↑</a>
+
+  <!-- ═══ SEARCH MODAL ═══════════════════════════════════════ -->
+  <div class="search-modal">
+    <div class="search-box">
+      <div class="search-input-wrapper">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" class="search-input" placeholder="Search documentation..." autocomplete="off">
+      </div>
+      <div class="search-results"></div>
+      <div class="search-hint">
+        <kbd>Esc</kbd> to close &nbsp;·&nbsp; <kbd>Ctrl+K</kbd> to toggle
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SCRIPTS ════════════════════════════════════════════ -->
+  <!-- Prism.js for syntax highlighting -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-json.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-yaml.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-ini.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js"></script>
+
+  <!-- Mermaid.js for diagrams -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
+  <!-- Our JS -->
+  <script src="js/docs.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="NetSim — Real-time network topology simulator with packet visualization">
+  <meta name="theme-color" content="#0a0e17">
+  <title>NetSim — Network Simulator</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- ═══ Header ═══ -->
+    <header class="header" role="banner">
+      <div class="header__logo">
+        <img src="assets/favicon.svg" alt="" class="header__logo-icon" aria-hidden="true">
+        <span class="header__logo-text">NetSim</span>
+        <span class="header__logo-version">v1.0</span>
+      </div>
+
+      <div class="connection-status" id="connectionStatus" aria-live="polite">
+        <span class="connection-dot" id="connectionDot"></span>
+        <span id="connectionLabel">Disconnected</span>
+      </div>
+
+      <div class="demo-banner" id="demoBanner">
+        <span class="demo-banner__dot"></span>
+        Demo Mode
+      </div>
+
+      <div class="header__spacer"></div>
+
+      <!-- Scenario Selector -->
+      <select class="scenario-select" id="scenarioSelect" aria-label="Select scenario">
+        <option value="">— Select Scenario —</option>
+      </select>
+
+      <!-- Simulation Controls -->
+      <div class="controls" role="toolbar" aria-label="Simulation controls">
+        <button class="ctrl-btn ctrl-btn--play" id="btnPlay" title="Play" aria-label="Play simulation">
+          ▶
+        </button>
+        <button class="ctrl-btn ctrl-btn--pause" id="btnPause" title="Pause" aria-label="Pause simulation">
+          ⏸
+        </button>
+        <button class="ctrl-btn ctrl-btn--step" id="btnStep" title="Step Forward" aria-label="Step forward">
+          ⏭
+        </button>
+        <button class="ctrl-btn ctrl-btn--reset" id="btnReset" title="Reset" aria-label="Reset simulation">
+          ↺
+        </button>
+      </div>
+
+      <!-- Speed Control -->
+      <div class="speed-control">
+        <span class="speed-control__label">Speed</span>
+        <input type="range" class="speed-slider" id="speedSlider"
+               min="0.5" max="5" step="0.5" value="1"
+               aria-label="Simulation speed">
+        <span class="speed-value" id="speedValue">1x</span>
+      </div>
+    </header>
+
+    <!-- ═══ Main Content ═══ -->
+    <main class="main-content">
+
+      <!-- Topology Canvas -->
+      <section class="topology-container" aria-label="Network Topology">
+        <div class="topology-container__label">Topology View</div>
+        <div class="topology-canvas" id="topologyCanvas"></div>
+      </section>
+
+      <!-- Packet Log Panel -->
+      <aside class="packet-log glass-panel" aria-label="Packet Log">
+        <div class="packet-log__header">
+          <div class="packet-log__title">
+            Event Log
+            <span class="packet-log__count" id="logCount">0</span>
+          </div>
+          <button class="packet-log__clear" id="btnClearLog" aria-label="Clear log">Clear</button>
+        </div>
+        <div class="packet-log__list" id="packetLogList" role="log" aria-live="polite" aria-relevant="additions">
+          <!-- Log entries injected here -->
+        </div>
+      </aside>
+
+    </main>
+
+    <!-- ═══ Stats Bar ═══ -->
+    <div class="stats-bar" role="status" aria-label="Simulation statistics">
+      <div class="stat-item">
+        <div class="stat-item__icon stat-item__icon--throughput" aria-hidden="true">📡</div>
+        <div class="stat-item__info">
+          <span class="stat-item__label">Throughput</span>
+          <span class="stat-item__value" id="statThroughput">0 <span class="stat-item__unit">pkt/s</span></span>
+        </div>
+      </div>
+      <div class="stats-bar__divider"></div>
+      <div class="stat-item">
+        <div class="stat-item__icon stat-item__icon--packets" aria-hidden="true">📦</div>
+        <div class="stat-item__info">
+          <span class="stat-item__label">Packets</span>
+          <span class="stat-item__value" id="statPackets">0</span>
+        </div>
+      </div>
+      <div class="stats-bar__divider"></div>
+      <div class="stat-item">
+        <div class="stat-item__icon stat-item__icon--latency" aria-hidden="true">⏱</div>
+        <div class="stat-item__info">
+          <span class="stat-item__label">Avg Latency</span>
+          <span class="stat-item__value" id="statLatency">0 <span class="stat-item__unit">ms</span></span>
+        </div>
+      </div>
+      <div class="stats-bar__divider"></div>
+      <div class="stat-item">
+        <div class="stat-item__icon stat-item__icon--nodes" aria-hidden="true">🖥</div>
+        <div class="stat-item__info">
+          <span class="stat-item__label">Nodes Active</span>
+          <span class="stat-item__value" id="statNodes">0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ Command Input ═══ -->
+    <div class="command-bar">
+      <span class="command-bar__prompt" aria-hidden="true">netsim&gt;</span>
+      <input type="text" class="command-bar__input" id="commandInput"
+             placeholder='Type a command… e.g. "ping host-a 192.168.1.20"'
+             autocomplete="off" spellcheck="false"
+             aria-label="Command input">
+      <span class="command-bar__hint"><kbd>Enter</kbd> to run</span>
+    </div>
+
+    <!-- ═══ Node Detail Sidebar ═══ -->
+    <div class="node-sidebar" id="nodeSidebar" role="complementary" aria-label="Node details">
+      <div class="node-sidebar__header">
+        <div class="node-sidebar__title" id="sidebarTitle">
+          Node Details
+        </div>
+        <button class="node-sidebar__close" id="btnCloseSidebar" aria-label="Close sidebar">✕</button>
+      </div>
+      <div class="node-sidebar__body" id="sidebarBody">
+        <!-- Node detail content injected here -->
+      </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast" aria-live="assertive"></div>
+
+  </div>
+
+  <!-- ═══ Scripts ═══ -->
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <script src="js/websocket.js"></script>
+  <script src="js/topology.js"></script>
+  <script src="js/packets.js"></script>
+  <script src="js/panels.js"></script>
+  <script src="js/demo.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+{
+  "name": "Simple LAN",
+  "description": "Three hosts connected via a switch on a single subnet",
+  "tick_rate": 0.1,
+  "nodes": [
+    {
+      "id": "host-a",
+      "type": "host",
+      "interfaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.10",
+          "mask": "255.255.255.0",
+          "mac": "aa:bb:cc:00:00:01"
+        }
+      ],
+      "gateway": "192.168.1.1"
+    },
+    {
+      "id": "host-b",
+      "type": "host",
+      "interfaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.20",
+          "mask": "255.255.255.0",
+          "mac": "aa:bb:cc:00:00:02"
+        }
+      ],
+      "gateway": "192.168.1.1"
+    },
+    {
+      "id": "host-c",
+      "type": "host",
+      "interfaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.30",
+          "mask": "255.255.255.0",
+          "mac": "aa:bb:cc:00:00:03"
+        }
+      ],
+      "gateway": "192.168.1.1"
+    },
+    {
+      "id": "switch-1",
+      "type": "switch",
+      "interfaces": [
+        {"name": "port0", "mac": "aa:bb:cc:ff:00:01"},
+        {"name": "port1", "mac": "aa:bb:cc:ff:00:02"},
+        {"name": "port2", "mac": "aa:bb:cc:ff:00:03"}
+      ]
+    }
+  ],
+  "links": [
+    {
+      "id": "link-1",
+      "endpoints": ["host-a.eth0", "switch-1.port0"],
+      "bandwidth": 1000000000,
+      "latency": 1,
+      "loss_rate": 0.0
+    },
+    {
+      "id": "link-2",
+      "endpoints": ["host-b.eth0", "switch-1.port1"],
+      "bandwidth": 1000000000,
+      "latency": 1,
+      "loss_rate": 0.0
+    },
+    {
+      "id": "link-3",
+      "endpoints": ["host-c.eth0", "switch-1.port2"],
+      "bandwidth": 1000000000,
+      "latency": 1,
+      "loss_rate": 0.0
+    }
+  ],
+  "actions": [
+    {"type": "ping", "from": "host-a", "to": "192.168.1.20", "count": 4, "delay": 2}
+  ]
+}

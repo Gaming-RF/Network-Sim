@@ -1,0 +1,91 @@
+{
+  "name": "Multi-Router Network",
+  "description": "Two subnets connected by two routers with hosts on each side",
+  "tick_rate": 0.1,
+  "nodes": [
+    {
+      "id": "host-a",
+      "type": "host",
+      "interfaces": [
+        {"name": "eth0", "ip": "10.0.1.10", "mask": "255.255.255.0", "mac": "aa:00:00:01:00:01"}
+      ],
+      "gateway": "10.0.1.1"
+    },
+    {
+      "id": "host-b",
+      "type": "host",
+      "interfaces": [
+        {"name": "eth0", "ip": "10.0.1.20", "mask": "255.255.255.0", "mac": "aa:00:00:01:00:02"}
+      ],
+      "gateway": "10.0.1.1"
+    },
+    {
+      "id": "router-1",
+      "type": "router",
+      "interfaces": [
+        {"name": "eth0", "ip": "10.0.1.1", "mask": "255.255.255.0", "mac": "cc:00:00:01:00:01"},
+        {"name": "eth1", "ip": "172.16.0.1", "mask": "255.255.255.252", "mac": "cc:00:00:01:00:02"}
+      ],
+      "routes": [
+        {"network": "10.0.2.0/24", "next_hop": "172.16.0.2", "interface": "eth1", "metric": 1}
+      ]
+    },
+    {
+      "id": "router-2",
+      "type": "router",
+      "interfaces": [
+        {"name": "eth0", "ip": "172.16.0.2", "mask": "255.255.255.252", "mac": "cc:00:00:02:00:01"},
+        {"name": "eth1", "ip": "10.0.2.1", "mask": "255.255.255.0", "mac": "cc:00:00:02:00:02"}
+      ],
+      "routes": [
+        {"network": "10.0.1.0/24", "next_hop": "172.16.0.1", "interface": "eth0", "metric": 1}
+      ]
+    },
+    {
+      "id": "host-c",
+      "type": "host",
+      "interfaces": [
+        {"name": "eth0", "ip": "10.0.2.10", "mask": "255.255.255.0", "mac": "aa:00:00:02:00:01"}
+      ],
+      "gateway": "10.0.2.1"
+    },
+    {
+      "id": "host-d",
+      "type": "host",
+      "interfaces": [
+        {"name": "eth0", "ip": "10.0.2.20", "mask": "255.255.255.0", "mac": "aa:00:00:02:00:02"}
+      ],
+      "gateway": "10.0.2.1"
+    },
+    {
+      "id": "switch-1",
+      "type": "switch",
+      "interfaces": [
+        {"name": "port0", "mac": "ff:00:00:01:00:01"},
+        {"name": "port1", "mac": "ff:00:00:01:00:02"},
+        {"name": "port2", "mac": "ff:00:00:01:00:03"}
+      ]
+    },
+    {
+      "id": "switch-2",
+      "type": "switch",
+      "interfaces": [
+        {"name": "port0", "mac": "ff:00:00:02:00:01"},
+        {"name": "port1", "mac": "ff:00:00:02:00:02"},
+        {"name": "port2", "mac": "ff:00:00:02:00:03"}
+      ]
+    }
+  ],
+  "links": [
+    {"id": "link-1", "endpoints": ["host-a.eth0", "switch-1.port0"], "bandwidth": 1000000000, "latency": 1, "loss_rate": 0.0},
+    {"id": "link-2", "endpoints": ["host-b.eth0", "switch-1.port1"], "bandwidth": 1000000000, "latency": 1, "loss_rate": 0.0},
+    {"id": "link-3", "endpoints": ["router-1.eth0", "switch-1.port2"], "bandwidth": 1000000000, "latency": 1, "loss_rate": 0.0},
+    {"id": "link-4", "endpoints": ["router-1.eth1", "router-2.eth0"], "bandwidth": 10000000000, "latency": 5, "loss_rate": 0.001},
+    {"id": "link-5", "endpoints": ["router-2.eth1", "switch-2.port0"], "bandwidth": 1000000000, "latency": 1, "loss_rate": 0.0},
+    {"id": "link-6", "endpoints": ["host-c.eth0", "switch-2.port1"], "bandwidth": 1000000000, "latency": 1, "loss_rate": 0.0},
+    {"id": "link-7", "endpoints": ["host-d.eth0", "switch-2.port2"], "bandwidth": 1000000000, "latency": 1, "loss_rate": 0.0}
+  ],
+  "actions": [
+    {"type": "ping", "from": "host-a", "to": "10.0.2.10", "count": 4, "delay": 3}
+  ]
+}
